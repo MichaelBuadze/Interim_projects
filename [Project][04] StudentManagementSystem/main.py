@@ -68,9 +68,7 @@ class StudentManagementSystem:
         print(f" {'სტუდენტის ID':<20} {'სრული სახელი':<20} {'შეფასება':<20} ")
         print("=" * 65)
         for student in self.students:
-            print(
-                f" {student.student_id:<20} {student.name:<20} {student.grade:<20} "
-            )
+            print(f" {student.student_id:<20} {student.name:<20} {student.grade:<20} ")
             print("-" * 65)
 
     # სტუდენტის ძებნა ID-ის მიხედვით
@@ -83,7 +81,8 @@ class StudentManagementSystem:
                 print(f" {student.student_id:<20} {student.name:<20} {student.grade:<20}")
                 print("-" * 65)
                 return
-        print(f"სტუდენტი ID {student_id} ვერ მოიძებნა.")
+        
+        print(f"\nსტუდენტი ID {student_id} ვერ მოიძებნა.")
 
     # სტუდენტის წაშლა ID-ის მიხედვით
     def delete_student(self, student_id: int):
@@ -103,7 +102,8 @@ class StudentManagementSystem:
                 self.save_data()
                 print("შეფასება წარმატებით განახლდა.")
                 return
-        print(f"სტუდენტი ID {student_id} ვერ მოიძებნა.")
+        if student_id != student.student_id:
+            print(f"სტუდენტი ID {student_id} ვერ მოიძებნა.")
 
     # პროგრამის მენიუს ფუნქციონალი
     def run(self):
@@ -128,40 +128,41 @@ class StudentManagementSystem:
                     print("\nშემდეგი მოქმედებისთვის აირჩიე მენიუს პუნქტი!\n")
                 else:
                     break
-            if choice == '1':
+            if choice == '1': # სტუდენტების ბაზა
                 self.view_all_students()
-            elif choice == '2':
+            elif choice == '2': # ახალი სტუდენტის დამატება
                 while True: # ციკლი დაჟინებით ითხოვს ვალიდურ მონაცემს.
-                    name = input("შეიყვანეთ სტუდენტის სახელი: ")
+                    name = input("შეიყვანეთ სტუდენტის სახელი: ").strip()
                     if not name:
                         print("სახელი აუცილებელი ველია, გთხოვთ შეიყვანოთ სახელი!")
                     elif name.isdigit():
                         print("დაფიქსირდა შეცდომა, შეიყვანეთ სახელი სწორად!")
-                        continue
                     else:
                         break
                 while True: # ციკლი დაჟინებით ითხოვს ვალიდურ მონაცემს.
                     grade = input("შეიყვანეთ შეფასება: ")
                     if grade.upper() not in self.VALID_GRADES:
-                        print("შეფასება არასწორია. დასაშვები ლათინური ასოები A-F")
-                        continue
+                        print("შეფასება არასწორია. დასაშვები ლათინური სიმბოლოები A-F")
                     else:
                         break
                 self.add_student(name, grade)
-            elif choice == '3':
-                while True: # ციკლი დაჟინებით ითხოვს ვალიდურ მონაცემს.
-                    try:
-                        student_id = int(input("შეიყვანეთ სტუდენტის ID: "))
-                    except ValueError:
-                        print("ID აუცილებელი ველია, გთხოვთ შეიყვანოთ!")
-                        continue
-                    else:
+            elif choice == '3': # სტუდენტის ძებნა ID-ს მიხედვით
+                while True:  # ციკლი 
+                    student_id = input("შეიყვანეთ სტუდენტის ID: ").strip()  # მოჭრით ცარიელ ადგილებს დასაწყისსა და ბოლოში.
+                    if student_id and student_id.isdigit():# ვამოწმებთ, ცარიელია თუ არა შეყვანილი მონაცემი. # ვამოწმებთ, რომ მონაცემი იყოს მხოლოდ რიცხვები.
                         break
-                self.search_student_by_id(student_id)
+                    else:
+                        print("\nID აუცილებელი ველია!")
+                        print("ID უნდა შედგებოდეს მხოლოდ რიცხვებისგან, სცადეთ თავიდან!")
+                student_id = int(student_id)                       
+                if self.search_student_by_id(student_id): # წარმატებით ნაპოვნი ID-ს დამუშავება.  
+                    break                  
+
             elif choice == '4':
                 while True: # ციკლი დაჟინებით ითხოვს ვალიდურ მონაცემს.
                     try:
                         student_id = int(input("შეიყვანეთ სტუდენტის ID: "))
+                        
                     except ValueError:
                         print("ID აუცილებელი ველია და ის უნდა იყოს რიცხვი.")
                         continue
