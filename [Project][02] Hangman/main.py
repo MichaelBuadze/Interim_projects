@@ -78,7 +78,7 @@ def play_game():
 if __name__ == "__main__":
     while True:
         play_game()
-        restart = input("\nგსურს თამაში თავიდან? (დიახ/არა): ").lower()
-        if restart != 'დიახ':
+        restart = input("\nგსურს თამაში თავიდან? (დიახ/არა/ok/no): ").lower()
+        if restart != 'დიახ' or restart != 'ok':
             print("\nმადლობა თამაშისთვის! ნახვამდის!")
             break

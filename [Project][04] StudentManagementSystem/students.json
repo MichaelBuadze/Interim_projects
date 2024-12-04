@@ -28,15 +28,5 @@
         "student_id": 6,
         "name": "test",
         "grade": "D"
-    },
-    {
-        "student_id": 7,
-        "name": "test",
-        "grade": "C"
-    },
-    {
-        "student_id": 8,
-        "name": "test",
-        "grade": "D"
     }
 ]

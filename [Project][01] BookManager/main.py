@@ -25,7 +25,6 @@ class BookManager:
         self.current_id += 1  # ID-ის გაზრდა
         book = Book(id=self.current_id, **book_data)
         self.books.append(book)
-        self.reassign_ids()  # ID-ების ხელახლა გადანომრვა
         self.save_to_json()  # მონაცემების შენახვა
 
     def list_books(self):  # გამოიტანს ბიბლიოთეკის ფონდში არსებულ წიგნებს
@@ -46,14 +45,15 @@ class BookManager:
         for book in self.books:
             if book.id == book_id:
                 self.books.remove(book)
-                self.reassign_ids()  # ID-ების ხელახლა გადანომრვა
+                self.reassign_ids(start_id=book_id)  # ID-ების გადანომრვა
                 self.save_to_json()
                 return True
         return False
-    
-    def reassign_ids(self):  # ხელახლა გადაანაწილებს ID-ებს
-        for index, book in enumerate(self.books, start=1):
-            book.id = index
+
+    def reassign_ids(self, start_id):  # ხელახლა გადაანაწილებს ID-ებს კონკრეტული წერტილიდან
+        for book in self.books:
+            if book.id >= start_id:
+                book.id -= 1
 
     def save_to_json(self):  # ინახავს JSON ფაილში მონაცემებს
         with open(self.filename, 'w', encoding='utf-8') as f:
@@ -72,7 +72,8 @@ class BookManager:
                     book = Book(**book_data)
                     self.books.append(book)
         except FileNotFoundError:
-            print("ფაილი ვერ მოიძებნა. იქმნება ახალი ფაილი...")
+            print("ფაილი ვერ მოიძებნა. ახალი ფაილი...")
+
 
 def main():
     book_manager = BookManager()
@@ -86,16 +87,16 @@ def main():
         print("5. პროგრამის დახურვა")
         choice = input("\nშეიყვანეთ ციფრი: ")
 
-        if choice == "1":
+        if choice == "1":  # არსებული ბიბლიოთეკა
             book_manager.list_books()
-        elif choice == "2":
+        elif choice == "2":  # ძებნა დასახელებით
             title = input("შეიყვანეთ დასახელება: ")
             book = book_manager.find_book_by_title(title)
             if book:
                 print(book)
             else:
                 print("\nმითითებული წიგნი, არ არის ბაზაში.")
-        elif choice == "3":
+        elif choice == "3":  # წიგნის დამატება
             while True:
                 title = input("წიგნის დასახელება: ")
                 if not title:
@@ -103,7 +104,7 @@ def main():
                     continue
                 else:
                     break
-            while True:    
+            while True:
                 author = input("ავტორი: ")
                 if not author:
                     print("თუ ავტორი უცნობია, ჩაწერე - \"უცნობი ავტორი\"")
@@ -117,12 +118,12 @@ def main():
                         raise ValueError
                     break
                 except ValueError:
-                    print("დაფიქსირდა შეცდობა! გთხოვთ შეიყვანოთ წიგნის გამოცემის წელი.")
+                    print("დაფიქსირდა შეცდომა! გთხოვთ შეიყვანოთ წიგნის გამოცემის წელი.")
             book_data = {"title": title, "author": author, "year": year}
             book_manager.add_book(book_data)
             print("\nწიგნი წარმატებით დაემატა!")
 
-        elif choice == "4":
+        elif choice == "4":  # წაშლა ID-ს მიხედვით
             try:
                 book_id = int(input("შეიყვანეთ წიგნის ID წასაშლელად: "))
                 if book_manager.remove_book_by_id(book_id):
@@ -132,11 +133,12 @@ def main():
             except ValueError:
                 print("გთხოვთ, შეიყვანოთ ვალიდური ID.")
 
-        elif choice == "5":
+        elif choice == "5":  # პროგრამის დახურვა
             print("პროგრამა დაიხურა.")
             break
         else:
-            print("გთხოვთ შეიყვანოთ კონკრეტული მენიუს შესაბამისი ციფრი.")
+            print("გთხოვთ, შეიყვანოთ კონკრეტული მენიუს შესაბამისი ციფრი.")
+
 
 if __name__ == "__main__":
     main()

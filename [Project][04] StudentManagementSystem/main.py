@@ -5,7 +5,7 @@ import os
 # სტუდენტის კლასი, რომელიც ინახავს სტუდენტის მონაცემებს
 class Student:
     def __init__(self, student_id: int, name: str, grade: str):
-        self.student_id = student_id  # უნიკალური ID
+        self.student_id = student_id  # უნიკალური ID, (ნომერი)
         self.name = name  # სტუდენტის სახელი
         self.grade = grade  # შეფასება
 
