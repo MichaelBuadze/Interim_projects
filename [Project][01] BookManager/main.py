@@ -104,16 +104,41 @@ def main():
         if choice == "1":  # არსებული ბიბლიოთეკა
             book_manager.list_books()
         elif choice == "2":  # ძებნა დასახელებით
-            title = input("შეიყვანეთ დასახელება: ")
+            while True:
+                title = input("წიგნის დასახელება: ")
+                if not title:
+                    print("მოსაძებნად, გთხოვთ შეიყვანეთ წიგნის დასახელება!")
+                    continue
+                else:
+                    break
             book = book_manager.find_book_by_title(title)
             if book:
                 print(book)
             else:
                 print("\nმითითებული წიგნი, არ არის ბაზაში.")
         elif choice == "3":  # წიგნის დამატება
-            title = input("წიგნის დასახელება: ")
-            author = input("ავტორი: ")
-            year = int(input("გამოცემის წელი: "))
+            while True:
+                title = input("წიგნის დასახელება: ")
+                if not title:
+                    print("დასახელება აუცილებელი ველია და ის არ უნდა იყოს ცარიელი!")
+                else:
+                    break
+
+            while True:
+                author = input("ავტორი: ")
+                if not author:
+                    print("თუ ავტორი უცნობია, ჩაწერე - \"უცნობი ავტორი\"")
+                else:
+                    break
+                
+            while True:
+                try:
+                    year = int(input("გამოცემის წელი: "))
+                    if year < 0:
+                        raise ValueError
+                    break
+                except ValueError:
+                    print("დაფიქსირდა შეცდომა! გთხოვთ შეიყვანოთ წიგნის გამოცემის წელი.")
             book_data = {"title": title, "author": author, "year": year}
             book_manager.add_book(book_data)
             print("\nწიგნი წარმატებით დაემატა!")
